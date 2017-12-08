@@ -2,15 +2,14 @@
 Pre-processing of ancillary data for soil moisture priors
 ##########################################################
 
-.. contents:: :depth: 2
 
 Introduction
 =============
 The prior models developed within the MULTIPLY framework require ancillary data to provide valuable preliminary knowledge to the process of inferring land surface parameters. This section deals with the data sets supporting the retrieval of soil moisture information from *Sentinel-1* microwave data.
-In this process soil moisture climatology data is used as prior to get a general idea of amplitude, variability and seasonal behaviour of the in situ soil moisture.
-In addition, an *Antecedent Precipitation Index* derived from current satellite and radar data will account for temporal high-resolution wetness information.
+In this process soil moisture climatology data is used as prior estimate to get a general idea of amplitude, variability and seasonal behaviour of the in situ soil moisture.
+In addition, an *Antecedent Precipitation Index* :cite:`mcfarland1975correlation` derived from current satellite and radar data will account for temporal high-resolution wetness information :cite:`Crow2007a`.
 Furthermore, statistical and deterministic priors will be implemented to define general constraints regarding the soil moisture inference.
-This summary only lists the ancillary data already used in the prototype software or at this stage envisaged to be integrated.
+This summary only lists the ancillary data which is already used in the prototype software or at this stage is envisaged to be integrated.
 
 Utilized Tools
 ================
@@ -26,23 +25,30 @@ The data was retrieved and processed with the following tools:
 Input Data Sets
 ===============
 
-Input Data for the Climatological Prior
+Climatological Prior
 -------------------------------------------
 
-The climatological soil moisture data is derived from the `ESA CCI soilmoisture product <http://www.esa-soilmoisture-cci.org/node/93>`_ which is the result from aggregating data from six active and passive satellite sensors over the period 1979 to 2010. "The Soil Moisture CCI project is part of the ESA Programme on Global Monitoring of Essential Climate Variables (ECV), better known as the Climate Change Initiative (CCI), initiated in 2010 for a period
-of 6 years" [#]_.
+The climatological soil moisture data is derived from the ESA CCI soil moisture project data whose intention is to produce the most complete and consistent data record of the essential climate variable (ECV) soil moisture. As part of the ESA Programm on global monitoring of these ECVs, and more precisely the Climate Change Initiative (CCI), the project was initiated in 2010 :cite:`DORIGO2017,GRUBER2017,LIU2012`. In detail, the *COMBINED* data set of product-version v02.2 is currently in use, but may be upgraded to the current release (v03.3). The soil moisture retrieval is based on aggregation of data from several active and passive satellite sensors which can be seen for the current version in :numref:`ESA_CCI_merge`.
+
+.. _ESA_CCI_merge:
+.. figure:: images/ESA_CCI_merge.jpg
+    :align: center
+    :width: 80%
+
+    Merging active and passive data in ESA CCI SM data product :cite:`ESACCI_ATBD2017`.
 
 
-Input Data for the Prior based on Antecedent Precipitation Index (API)
+
+Prior based on Antecedent Precipitation Index (API)
 -------------------------------------------------------------------------
 For the API based prior generation further comparison of the data sets listed below and possible data storage/management decisions have to made to determine which data sets are going to be used in this module.
 
 
 Satellite Data
 ................
-To account for high spatial as well as temporal resolution and to assure the final software package to be future-proof the half hourly data sets from the 'Global Precipitation Mission' (GPM) are a viable option. The *IMERG* data provides rainfall estimates which result from combining data from all passive-microwave instruments in the GPM constellation.
-  
-    'This algorithm is intended to intercalibrate, merge, and interpolate “all” satellite microwave precipitation estimates, together with microwave-calibrated infrared (IR) satellite estimates, precipitation gauge analyses, and potentially other precipitation estimators at fine time and space scales for the TRMM and GPM eras over the entire globe. The system is run several times for each observation time, first giving a quick estimate and successively providing better estimates as more data arrive. The final step uses monthly gauge data to create research-level products.' [#]_
+To account for high spatial as well as temporal resolution and to assure the final software package to be future-proof, the half hourly data sets from the 'Global Precipitation Mission' (GPM) are a viable option. The *IMERG* data provides rainfall estimates which result from combining data from all passive-microwave instruments in the GPM constellation.
+
+   'This algorithm is intended to intercalibrate, merge, and interpolate “all” satellite microwave precipitation estimates, together with microwave-calibrated infrared (IR) satellite estimates, precipitation gauge analyses, and potentially other precipitation estimators at fine time and space scales for the TRMM and GPM eras over the entire globe. The system is run several times for each observation time, first giving a quick estimate and successively providing better estimates as more data arrive. The final step uses monthly gauge data to create research-level products' :cite:`GPM_ATBD2017`.
 
 Following data sets are to be used in the platform:
 
@@ -58,13 +64,13 @@ Following data sets are to be used in the platform:
     + 0.1° - 1 Day  Gridded,
     + 60°N-60°S,
     + April 2015 to present
-    + 4 Months (research / final run)
+    + delay 4 Months (research / final run)
 
 Weather Radar Data
 ...................
-For very high spatial and temporal resolution data to be used in the prior engine weather radar systems are a very good source. So far, the usage of *RADOLAN's* precipitation data from 'Deutsche Wetterdienst' (DWD) is implemented, which is retrieved from a combination of weather radar data and *in-situ* precipitation measurements.
+For very high spatial and temporal resolution precipitation data to be used in the prior engine, weather radar systems are a very good source. So far, the usage of *RADOLAN* precipitation data from 'Deutsche Wetterdienst' (DWD) is implemented, in detail the *RADOLAN RW* product, which is retrieved from a combination of weather radar data and *in-situ* precipitation measurements :cite:`Bartels2004`.
 
-The utilized product provides hourly precipitation amounts with a resolution of 0.1 mm and a spatial resolution of 1 km². The data is available in near real time within 30 minutes for the area of Germany [#]_. This will possibly eventually be substituted by *EUMETSAT* *OPERA* data [#]_.
+The utilized product provides hourly precipitation amounts with a resolution of 0.1 mm and a spatial resolution of 1 km². The data is available in near real time within 30 minutes for the area of Germany. This will possibly eventually be substituted by *EUMETSAT* *OPERA* data :cite:`Opera2014`.
 
 
 
@@ -74,25 +80,25 @@ This section sums up the sources of the above mentioned data sets. Additionally,
 
 ESA-CCI Soil Moisture Data
 ---------------------------
-The data used for the climatological prior is the ECV soil moisture data set generated by the ESA CCI. It can be downloaded from their project website: http://www.esa-soilmoisture-cci.org/node/145 . 
+The data used for the climatological prior is the ECV soil moisture data set generated by the ESA CCI. It can be downloaded from their `project website <http://www.esa-soilmoisture-cci.org/node/145>`_. 
 
 GPM Satellite Data
 ---------------------
-The satellite data which is used for calculating the API will primary come from the Global Precipitation Measurement mission. Mirador web service [#]_ was used to download the data. This service provides a keyword search (e.g. *GPM_3IMERGHH*) and can restrict the results to timespan and location. 
+    The satellite data which is used for calculating the API will primary come from the Global Precipitation Measurement mission.
+    The `Mirador web service <https://mirador.gsfc.nasa.gov/>`_ was used to download the data. This service provides a keyword search (e.g. *GPM_3IMERGHH*) and can restrict the results to timespan and location. A list of links is the result which then has to be used to download the requested data. Therefore, the procedure, as listed on the Mirador web site, comprises the following steps (for an registered user of `Earthdata <https://urs.earthdata.nasa.gov/home>`_:
 
-Instructions from the Mirador web site are as follows:
-
-* Save the list of URLs in one of the above links to your local workstation as myfile.dat
-* If you haven't done so already, follow these instructions to register with Earthdata Login system and authorize the access to GES DISC data
-* Create a ~/.netrc file pointing to urs.earthdata.nasa.gov and an empty ~/.urs_cookies file
+* Save the list of URLs to your local workstation as myfile.dat
+* Create a ``~/.netrc`` file (content: *machine urs.earthdata.nasa.gov login <username> password <password>*) and an empty ``~/.urs_cookies`` file
 * On your command line, using wget 1.18 ( or higher ):
 
-  * wget --content-disposition --load-cookies ~/.urs_cookies --save-cookies ~/.urs_cookies --auth-no-challenge=on --keep-session-cookies -i myfile.dat
+  .. code:: bash
+
+     wget --content-disposition --load-cookies ~/.urs_cookies --save-cookies ~/.urs_cookies --auth-no-challenge=on --keep-session-cookies -i myfile.dat
 
 
 RADOLAN Weather Radar Data
 --------------------------
-The RADOLAN as currently used weather radar data is provided by DWD. The data is made available on their FTP-server which can be reached at ftp://ftp-cdc.dwd.de/pub/CDC/grids_germany/hourly/radolan/ . 
+The RADOLAN product as currently used weather radar data is provided by the DWD. The data is made available on their public FTP-server which can be reached at ftp://ftp-cdc.dwd.de/pub/CDC/grids_germany/hourly/radolan/.
 
 
 
@@ -101,7 +107,7 @@ Pre-Processing
 
 ESA-CCI Soil Moisture Data
 ------------------------------
-ESA CCI soilmoisture data was aggregated to climatological values using `geoval module <https://github.com/pygeo/geoval>`_. The possibility to extract the *'intra-monthly'* standard deviation over time at the aggregated pixel was added to provide a measure of uncertainty. *Geoval* makes it as simple as:
+The ESA CCI soilmoisture data was aggregated to climatological values using `geoval module <https://github.com/pygeo/geoval>`_. The possibility to extract the *'intra-monthly'* standard deviation over time at the aggregated pixel was added to provide a measure of uncertainty. *Geoval* makes it as simple as:
 
 .. code:: Python
 
@@ -116,7 +122,7 @@ ESA CCI soilmoisture data was aggregated to climatological values using `geoval 
    sm_climatology_stdev.save('CCI_SM_climatology_stdev_eur.nc')
 
 Further pre-processing steps are subsetting, merging means and standard deviation files and inverting the latitudes of the climatology data.
-A subset of the data for Europe may be provided to speed up extraction time. This could be easily created with *ncks*'s command line interface (CLI) via:
+A subset of the data (e.g. for Europe) may be provided to speed up extraction time. This could be easily created with *ncks*'s command line interface (CLI) via:
 
 .. code::
 
@@ -140,13 +146,13 @@ Satellite Data (GPM)
 --------------------
 The steps to pre-process GPM data after download are:
 
-1. Conversion to NetCDF
+1. Conversion of HDF files to NetCDF format
 
 This transformation utilizes the *ncl* tools and is initiated via ``ncl gpm_hdf2nc.ncl`` where *gpm_hdf2nc.ncl* is an adjusted, thus actually working version of the routine provided at https://www.ncl.ucar.edu/Applications/Scripts/gpm_hdf2nc.ncl . 
 
-2. Altering meta-data
+2. Adjustment of meta-data
 
-Here, the meta-data of the newly created NetCDF files is modified. This includes adjusting time information from filename if not present in NetCDF file dimensions vie *cdo settime* and *cdo setdate* and re-order latitudes and longitudes via *ncpdq*.
+Here, the meta-data of the newly created NetCDF files is modified. This includes adjusting time information from filename if not present in NetCDF file dimensions via ``cdo settime`` and ``cdo setdate`` and re-order latitudes and longitudes with *ncpdq*.
    
      .. code::
 
@@ -197,15 +203,13 @@ The data may optionally be subsetted via ``ncks -d lat,46.5,55.5 -d lon,4.,16. f
 
 Weather Radar Data
 ------------------
-The data is downloaded in ASCII format with rows and columns representing the
-1 km² pixels.
-An accompanying document holding the coordinates of each cell is provided by the
-DWD.
+The RADOLAN weather radar data is downloaded in ASCII format with rows and columns representing the 1 km² pixels. An accompanying document holding the coordinates of each cell is provided by the
+`DWD <ftp://ftp-cdc.dwd.de/pub/CDC/grids_germany/hourly/radolan/Unterstuetzungsdokumente/>`_.
 
 Reproject RADOLAN Data and Create Geotiff
 ...............................................
-RADOLAN uses its own stereographic projection defined by the DWD (German Weather Service). In order to use it effortlessly in combination with other data sets it is beeing reprojected to WGS84.
-This includes transforming RADOLAN ascii data sets to reprojected GeoTiffs using ``gdalwarp``:
+The RADOLAN project uses its own stereographic projection defined by the DWD (German Weather Service). In order to use it effortlessly in combination with other data sets, it is beeing reprojected to WGS84.
+This includes transforming RADOLAN ASCII data sets to reprojected GeoTiffs using ``gdalwarp``:
 
   .. code-block:: bash
 
@@ -256,7 +260,7 @@ This creates GeoTiff files with the following metadata (e.g.):
 
 As ``AREA_OR_POINT=Area`` the coordinates denote the upper left pixel corner.
 
-"PixelIsArea" Raster Space (from `maptools.org`_)::
+"PixelIsArea" Raster Space (from `maptools.org`)::
 
      The "PixelIsArea" raster grid space R, which is the default, uses coordinates I and J, with (0,0)
      denoting the upper-left corner of the image, and increasing I to the right, increasing J down.
@@ -278,7 +282,7 @@ As ``AREA_OR_POINT=Area`` the coordinates denote the upper left pixel corner.
 
 Create NetCDF files from RADOLAN data
 ................................................
-With many (> 100k) hourly RADOLAN data sets from different folders, the creation of NetCDF files was accomplished with a python script walking directories and creating single NetCDF files from the previously generated GeoTiffs with *gdal* and *netCDF4* packages. Furthermore, the package joblib_ was used for parallelization:
+With many (> 100.000) hourly RADOLAN data sets from different folders, the creation of NetCDF files was accomplished with a python script walking directories and creating single NetCDF files from the previously generated GeoTiffs with ``gdal`` and ``netCDF4`` packages. Furthermore, the package ``joblib`` was used for parallelization:
 
   .. code-block:: python
 
@@ -305,15 +309,8 @@ The function was also passed to a parallelization module (``joblib``) to speed t
 
 
 
-References
-------------
-.. [#] http://www.esa-soilmoisture-cci.org/node/93
-.. [#] https://pmm.nasa.gov/data-access/downloads/gpm
-.. [#] http://www.dwd.de/DE/leistungen/radolan/radolan.html
-.. [#] http://eumetnet.eu/activities/observations-programme/current-activities/opera/
-.. [#] https://mirador.gsfc.nasa.gov/cgi-bin/mirador/homepageAlt.pl?keyword=GPM_3IMERGHH
-.. _production: https://www.dwd.de/DE/leistungen/radolan/radolan_info/radolan_informationen.html
+.. rubric:: References
+.. bibliography:: references.bib
+    :style: unsrt
 
-.. _stackexchange: https://gis.stackexchange.com/questions/70458/convert-timeseries-stack-of-gtiff-raster-to-single-netcdf
-.. _joblib: https://pythonhosted.org/joblib/generated/joblib.Parallel.html
-.. _maptools.org:  http://geotiff.maptools.org/spec/geotiff2.5.html
+
